@@ -145,21 +145,26 @@
             border-right: 15px solid #8c7355;
         }
 
-        /* FIXED: Replaced absolute positioning with CSS Grid to dynamically fit text height */
+        /* --- BULLETPROOF MOBILE FIX --- */
         .text-container {
             position: relative;
-            display: grid;
-            align-items: center;
-            justify-items: center;
             width: 100%;
+            min-height: 250px; /* Forces paper height to stretch */
         }
 
         .korean-text, .english-text {
-            grid-area: 1 / 1;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Locks text dead center */
+            width: 100%;
+            margin: 0; /* Removes default margins that caused pushing */
+            padding: 0;
             transition: opacity 0.8s ease;
             font-size: 19px;
-            line-height: 1.6;
-            width: 100%;
+            line-height: 1.8;
+            text-align: center;
+            word-wrap: break-word; /* Ensures long words don't break width */
         }
 
         .english-text {
@@ -281,7 +286,7 @@
             100% { transform: translateY(-120vh) scale(0.5); opacity: 0; }
         }
 
-        /* Fixed Final Message */
+        /* Final Message */
         #final-message {
             position: absolute;
             top: 40%;
@@ -302,7 +307,7 @@
             to { opacity: 1; }
         }
 
-        /* MOBILE RESPONSIVE FIXES */
+        /* --- MOBILE PHONE OPTIMIZATION --- */
         @media (max-width: 600px) {
             .envelope {
                 padding: 40px 30px;
@@ -312,17 +317,24 @@
             
             .hanji-scroll {
                 width: 92%;
-                padding: 40px 20px;
-                border-left-width: 10px;
-                border-right-width: 10px;
+                padding: 30px 15px; /* Give text more width room */
             }
+            
+            .text-container {
+                min-height: 330px; /* Safe padding for tall text block on mobile */
+            }
+            
             .korean-text, .english-text {
-                font-size: 15px; /* Smaller font to fit phone screens properly */
+                font-size: 14px; /* Perfectly sized to fit without overflowing */
+                width: 96%;
+                line-height: 1.9;
             }
+            
             .continue-btn {
                 font-size: 15px;
                 padding: 10px 24px;
             }
+            
             #final-message {
                 font-size: 24px;
             }
@@ -331,12 +343,10 @@
 </head>
 <body>
 
-    <!-- UPDATE THIS LINK WITH YOUR TEMPORARY SOUNDTRACK -->
     <audio id="bg-music" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Intro Screen (Covered Letter) -->
     <div id="intro-screen" class="screen">
         <div class="envelope" onclick="startExperience()">
             <div class="korean-name">크레샤니 네트미마에게</div>
@@ -346,12 +356,10 @@
         <div class="open-hint">Tap to open the letter</div>
     </div>
 
-    <!-- Phase 1: Traditional Greeting -->
     <div id="phase1" class="screen hidden">
         <div id="petals-container"></div>
         <div class="hanji-scroll">
             <div class="text-container">
-                <!-- Removed mid-sentence <br> tags so text naturally wraps on mobile -->
                 <p class="korean-text">
                     저보다 조금 연상이지만, 여전히 제가 가장 대화하고 나누기 좋아하는 사람 중 한 명이에요.<br><br>
                     크든 작든 올해 모든 꿈이 이루어지길 바랄게요.<br>잊지 못할 생일 보내세요! ✨
@@ -361,12 +369,11 @@
                     Hope all your dreams, big or small, come true this year.<br>Have an unforgettable birthday! ✨
                 </p>
             </div>
-            <p style="font-size: 12px; color: #888; margin-top: 30px;">(Hover or press to translate)</p>
+            <p style="font-size: 12px; color: #888; margin-top: 15px;">(Hover or press to translate)</p>
         </div>
         <button class="continue-btn" onclick="goToPhase2()">Journey to the River</button>
     </div>
 
-    <!-- Phase 2 & 3: Wishing Ceremony & Lantern Release -->
     <div id="phase2" class="screen hidden">
         <div id="wish-ui" class="wish-container">
             <textarea id="wish-input" placeholder="Write your birthday wish here..."></textarea>
