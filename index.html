@@ -22,11 +22,10 @@
             color: #fff;
         }
 
-        /* --- FIXED: USING DIRECT IMAGE URLS (.jpg files) --- */
         :root {
-            --bg-phase1: url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=80'); /* Girl in Hanbok / Cherry blossoms */
-            --bg-phase2: url('https://pixabay.com/get/g58231091628e5b715dc74f0f146777b44913bea46978875fd71eab0516550a5dabb7d47cf5675522ecf36650cc8f9329afc3f87bd00f0829abb670ec46aefdc6a691a07466b646efd8d29d6dfb869cd5.jpg?attachment='); /* Night stream / Lanterns */
-            --lantern-img: url('https://cdn-icons-png.flaticon.com/512/3595/3595462.png'); /* Transparent lantern image */
+            --bg-phase1: url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=80');
+            --bg-phase2: url('https://pixabay.com/get/g58231091628e5b715dc74f0f146777b44913bea46978875fd71eab0516550a5dabb7d47cf5675522ecf36650cc8f9329afc3f87bd00f0829abb670ec46aefdc6a691a07466b646efd8d29d6dfb869cd5.jpg?attachment=');
+            --lantern-img: url('https://cdn-icons-png.flaticon.com/512/3595/3595462.png');
         }
 
         .screen {
@@ -49,7 +48,7 @@
         }
 
         /* Intro Screen - Covered Letter */
-       #intro-screen {
+        #intro-screen {
             background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
@@ -68,6 +67,7 @@
             text-align: center;
             transition: transform 0.4s ease, box-shadow 0.4s ease;
             position: relative;
+            max-width: 90%;
         }
 
         .envelope:hover {
@@ -109,7 +109,7 @@
             margin-top: 25px;
             font-family: 'Cinzel', serif;
             font-size: 12px;
-            color: #888;
+            color: #e0e0e0;
             letter-spacing: 1px;
             animation: pulse 2s infinite;
         }
@@ -145,19 +145,20 @@
             border-right: 15px solid #8c7355;
         }
 
+        /* FIXED: Replaced absolute positioning with CSS Grid to dynamically fit text height */
         .text-container {
             position: relative;
-            min-height: 200px;
-            display: flex;
-            justify-content: center;
+            display: grid;
             align-items: center;
+            justify-items: center;
+            width: 100%;
         }
 
         .korean-text, .english-text {
-            position: absolute;
+            grid-area: 1 / 1;
             transition: opacity 0.8s ease;
             font-size: 19px;
-            line-height: 1.8;
+            line-height: 1.6;
             width: 100%;
         }
 
@@ -231,13 +232,15 @@
             align-items: center;
             transition: opacity 1s ease;
             z-index: 20;
+            width: 100%;
         }
 
         textarea {
             background: #f4ecd8;
             background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
-            width: 320px;
-            height: 160px;
+            width: 90%;
+            max-width: 350px;
+            height: 150px;
             padding: 20px;
             border: none;
             border-radius: 5px;
@@ -298,6 +301,32 @@
         @keyframes fadeIn {
             to { opacity: 1; }
         }
+
+        /* MOBILE RESPONSIVE FIXES */
+        @media (max-width: 600px) {
+            .envelope {
+                padding: 40px 30px;
+            }
+            .envelope .korean-name { font-size: 24px; }
+            .envelope .english-name { font-size: 16px; }
+            
+            .hanji-scroll {
+                width: 92%;
+                padding: 40px 20px;
+                border-left-width: 10px;
+                border-right-width: 10px;
+            }
+            .korean-text, .english-text {
+                font-size: 15px; /* Smaller font to fit phone screens properly */
+            }
+            .continue-btn {
+                font-size: 15px;
+                padding: 10px 24px;
+            }
+            #final-message {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -322,12 +351,13 @@
         <div id="petals-container"></div>
         <div class="hanji-scroll">
             <div class="text-container">
+                <!-- Removed mid-sentence <br> tags so text naturally wraps on mobile -->
                 <p class="korean-text">
-                    저보다 조금 연상이지만, 여전히 제가 가장 대화하고<br>나누기 좋아하는 사람 중 한 명이에요.<br><br>
+                    저보다 조금 연상이지만, 여전히 제가 가장 대화하고 나누기 좋아하는 사람 중 한 명이에요.<br><br>
                     크든 작든 올해 모든 꿈이 이루어지길 바랄게요.<br>잊지 못할 생일 보내세요! ✨
                 </p>
                 <p class="english-text">
-                    Even though you're a little older than me, you're still one of my<br>favorite people to talk to and share things with.<br><br>
+                    Even though you're a little older than me, you're still one of my favorite people to talk to and share things with.<br><br>
                     Hope all your dreams, big or small, come true this year.<br>Have an unforgettable birthday! ✨
                 </p>
             </div>
@@ -348,7 +378,6 @@
     </div>
 
     <script>
-        // Start Experience & Play Audio
         function startExperience() {
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('phase1').classList.remove('hidden');
@@ -360,7 +389,6 @@
             createPetals();
         }
 
-        // Generate falling cherry blossom petals
         function createPetals() {
             const container = document.getElementById('petals-container');
             const petalCount = 35;
@@ -384,7 +412,6 @@
             }
         }
 
-        // Transition from Phase 1 to Phase 2
         function goToPhase2() {
             document.getElementById('phase1').classList.add('hidden');
             setTimeout(() => {
@@ -392,7 +419,6 @@
             }, 1000);
         }
 
-        // Phase 3: Submit Wish & Fly Lantern
         function releaseLantern() {
             const wishInput = document.getElementById('wish-input').value;
             if (wishInput.trim() === "") {
@@ -400,32 +426,28 @@
                 return;
             }
 
-            // Smoothly fade out the text area and button
             const wishUI = document.getElementById('wish-ui');
             wishUI.style.opacity = '0';
-            wishUI.style.pointerEvents = 'none'; // Prevent clicks while fading
+            wishUI.style.pointerEvents = 'none';
             
             setTimeout(() => {
-                // Completely hide UI so it doesn't block the lantern
                 wishUI.style.display = 'none';
                 
-                // Show and animate lantern
                 const lantern = document.getElementById('lantern');
                 lantern.style.opacity = '1';
                 
                 setTimeout(() => {
                     lantern.classList.add('fly-away');
                     
-                    // Fade in the final message directly using styles
                     setTimeout(() => {
                         const finalMsg = document.getElementById('final-message');
                         finalMsg.style.visibility = 'visible';
                         finalMsg.style.opacity = '1';
-                    }, 2000); // Triggers halfway through the lantern flying away
+                    }, 2000); 
 
                 }, 800);
 
-            }, 1000); // Wait for wish-ui fade out
+            }, 1000); 
         }
     </script>
 </body>
