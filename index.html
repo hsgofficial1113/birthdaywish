@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Wish for Kreshani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Serif+KR:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Noto Serif KR', serif;
+            overflow: hidden;
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* --- FIXED: USING DIRECT IMAGE URLS (.jpg files) --- */
+        :root {
+            --bg-phase1: url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=80'); /* Girl in Hanbok / Cherry blossoms */
+            --bg-phase2: url('https://pixabay.com/get/g58231091628e5b715dc74f0f146777b44913bea46978875fd71eab0516550a5dabb7d47cf5675522ecf36650cc8f9329afc3f87bd00f0829abb670ec46aefdc6a691a07466b646efd8d29d6dfb869cd5.jpg?attachment='); /* Night stream / Lanterns */
+            --lantern-img: url('https://cdn-icons-png.flaticon.com/512/3595/3595462.png'); /* Transparent lantern image */
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s;
+        }
+
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Intro Screen - Covered Letter */
+       #intro-screen {
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 100;
+        }
+
+        .envelope {
+            background: #e4d5b7;
+            background-image: url('https://www.transparenttextures.com/patterns/rice-paper.png');
+            padding: 50px 60px;
+            border: 2px solid #c2a163;
+            border-radius: 4px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+        }
+
+        .envelope:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+        }
+
+        .envelope .korean-name {
+            font-size: 28px;
+            color: #4a3b2c;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .envelope .english-name {
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            color: #6b5840;
+            margin-bottom: 25px;
+        }
+
+        .wax-seal {
+            width: 45px;
+            height: 45px;
+            background: #901a1e;
+            border-radius: 50%;
+            margin: 0 auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.4);
+            border: 2px solid #701114;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #d4af37;
+            font-size: 20px;
+        }
+
+        .open-hint {
+            margin-top: 25px;
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            color: #888;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* Phase 1: Traditional Greeting */
+        #phase1 {
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), var(--bg-phase1);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 10;
+        }
+
+        .hanji-scroll {
+            background: #f4ecd8;
+            background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+            width: 85%;
+            max-width: 700px;
+            padding: 50px 40px;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            position: relative;
+            text-align: center;
+            color: #333;
+            cursor: pointer;
+            border-left: 15px solid #8c7355;
+            border-right: 15px solid #8c7355;
+        }
+
+        .text-container {
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .korean-text, .english-text {
+            position: absolute;
+            transition: opacity 0.8s ease;
+            font-size: 19px;
+            line-height: 1.8;
+            width: 100%;
+        }
+
+        .english-text {
+            font-family: 'Cinzel', serif;
+            font-size: 17px;
+            opacity: 0;
+            font-weight: 600;
+        }
+
+        .hanji-scroll:hover .korean-text,
+        .hanji-scroll:active .korean-text {
+            opacity: 0;
+        }
+        
+        .hanji-scroll:hover .english-text,
+        .hanji-scroll:active .english-text {
+            opacity: 1;
+        }
+
+        .continue-btn {
+            margin-top: 40px;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-family: 'Cinzel', serif;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            animation: fadeIn 2s forwards 4s;
+        }
+
+        .continue-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Cherry Blossom Petals */
+        .petal {
+            position: absolute;
+            background: #ffb7c5;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 15;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(1); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(0.8); opacity: 0; }
+        }
+
+        /* Phase 2 & 3: Wishing Ceremony */
+        #phase2 {
+            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), var(--bg-phase2);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 5;
+        }
+
+        .wish-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 1s ease;
+            z-index: 20;
+        }
+
+        textarea {
+            background: #f4ecd8;
+            background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+            width: 320px;
+            height: 160px;
+            padding: 20px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            color: #333;
+            resize: none;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus {
+            outline: 2px solid #d4af37;
+        }
+
+        /* Lantern */
+        #lantern {
+            width: 80px;
+            height: 120px;
+            background-image: var(--lantern-img);
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: absolute;
+            bottom: 25%;
+            opacity: 0;
+            filter: drop-shadow(0 0 20px rgba(255, 200, 50, 0.9));
+            transition: opacity 1s ease;
+            z-index: 15;
+        }
+
+        .fly-away {
+            animation: flyLantern 7s ease-in forwards;
+        }
+
+        @keyframes flyLantern {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-120vh) scale(0.5); opacity: 0; }
+        }
+
+        /* Fixed Final Message */
+        #final-message {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            padding: 0 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.4);
+            opacity: 0; 
+            visibility: hidden; 
+            transition: opacity 2s ease;
+            text-align: center;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- UPDATE THIS LINK WITH YOUR TEMPORARY SOUNDTRACK -->
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Intro Screen (Covered Letter) -->
+    <div id="intro-screen" class="screen">
+        <div class="envelope" onclick="startExperience()">
+            <div class="korean-name">크레샤니 네트미마에게</div>
+            <div class="english-name">To Kreshani Nethmima</div>
+            <div class="wax-seal">誠</div>
+        </div>
+        <div class="open-hint">Tap to open the letter</div>
+    </div>
+
+    <!-- Phase 1: Traditional Greeting -->
+    <div id="phase1" class="screen hidden">
+        <div id="petals-container"></div>
+        <div class="hanji-scroll">
+            <div class="text-container">
+                <p class="korean-text">
+                    저보다 조금 연상이지만, 여전히 제가 가장 대화하고<br>나누기 좋아하는 사람 중 한 명이에요.<br><br>
+                    크든 작든 올해 모든 꿈이 이루어지길 바랄게요.<br>잊지 못할 생일 보내세요! ✨
+                </p>
+                <p class="english-text">
+                    Even though you're a little older than me, you're still one of my<br>favorite people to talk to and share things with.<br><br>
+                    Hope all your dreams, big or small, come true this year.<br>Have an unforgettable birthday! ✨
+                </p>
+            </div>
+            <p style="font-size: 12px; color: #888; margin-top: 30px;">(Hover or press to translate)</p>
+        </div>
+        <button class="continue-btn" onclick="goToPhase2()">Journey to the River</button>
+    </div>
+
+    <!-- Phase 2 & 3: Wishing Ceremony & Lantern Release -->
+    <div id="phase2" class="screen hidden">
+        <div id="wish-ui" class="wish-container">
+            <textarea id="wish-input" placeholder="Write your birthday wish here..."></textarea>
+            <button class="continue-btn" style="opacity: 1; animation: none;" onclick="releaseLantern()">Release Wish</button>
+        </div>
+        
+        <div id="lantern"></div>
+        <div id="final-message">Your wish is carrying to the stars... ✨</div>
+    </div>
+
+    <script>
+        // Start Experience & Play Audio
+        function startExperience() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('phase1').classList.remove('hidden');
+            
+            const music = document.getElementById('bg-music');
+            music.volume = 0.4;
+            music.play().catch(e => console.log("Audio play blocked by browser."));
+
+            createPetals();
+        }
+
+        // Generate falling cherry blossom petals
+        function createPetals() {
+            const container = document.getElementById('petals-container');
+            const petalCount = 35;
+
+            for (let i = 0; i < petalCount; i++) {
+                let petal = document.createElement('div');
+                petal.classList.add('petal');
+                
+                let size = Math.random() * 12 + 6; 
+                let left = Math.random() * 100;
+                let duration = Math.random() * 6 + 4;
+                let delay = Math.random() * 5;
+
+                petal.style.width = size + 'px';
+                petal.style.height = size + 'px';
+                petal.style.left = left + 'vw';
+                petal.style.animationDuration = duration + 's';
+                petal.style.animationDelay = delay + 's';
+
+                container.appendChild(petal);
+            }
+        }
+
+        // Transition from Phase 1 to Phase 2
+        function goToPhase2() {
+            document.getElementById('phase1').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('phase2').classList.remove('hidden');
+            }, 1000);
+        }
+
+        // Phase 3: Submit Wish & Fly Lantern
+        function releaseLantern() {
+            const wishInput = document.getElementById('wish-input').value;
+            if (wishInput.trim() === "") {
+                alert("Please write a wish first!");
+                return;
+            }
+
+            // Smoothly fade out the text area and button
+            const wishUI = document.getElementById('wish-ui');
+            wishUI.style.opacity = '0';
+            wishUI.style.pointerEvents = 'none'; // Prevent clicks while fading
+            
+            setTimeout(() => {
+                // Completely hide UI so it doesn't block the lantern
+                wishUI.style.display = 'none';
+                
+                // Show and animate lantern
+                const lantern = document.getElementById('lantern');
+                lantern.style.opacity = '1';
+                
+                setTimeout(() => {
+                    lantern.classList.add('fly-away');
+                    
+                    // Fade in the final message directly using styles
+                    setTimeout(() => {
+                        const finalMsg = document.getElementById('final-message');
+                        finalMsg.style.visibility = 'visible';
+                        finalMsg.style.opacity = '1';
+                    }, 2000); // Triggers halfway through the lantern flying away
+
+                }, 800);
+
+            }, 1000); // Wait for wish-ui fade out
+        }
+    </script>
+</body>
+</html>
